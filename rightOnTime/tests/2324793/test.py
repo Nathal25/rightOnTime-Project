@@ -53,4 +53,3 @@ class AttendanceCheckInTestCase(APITestCase):
 
 		self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
 		self.assertIn('error', response.data)
-		print("Response Data:", response.data)
