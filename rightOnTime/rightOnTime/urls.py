@@ -29,4 +29,5 @@ urlpatterns = [
 
     # crud employees
     path('', include(router.urls)),
+    path('attendance/', include('attendance.urls')),
 ]
