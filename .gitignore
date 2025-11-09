@@ -4,3 +4,18 @@ __pycache__/
 migrations/
 
 venv/
+
+# Coverage reports
+.coverage
+htmlcov/
+coverage.xml
+*.cover
+.pytest_cache/
+
+# SonarCloud
+.scannerwork/
+
+# Test results
+test-results.xml
+bandit-report.json
+pylint-report.txt

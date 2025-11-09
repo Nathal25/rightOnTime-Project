@@ -9,3 +9,9 @@ drf-spectacular==0.27.2
 djangorestframework-simplejwt==5.5.0
 dj-database-url==2.3.0
 ipython==8.32.0
+
+# Testing and Code Quality
+pytest==7.4.3
+pytest-django==4.7.0
+pytest-cov==4.1.0
+coverage==7.3.2
