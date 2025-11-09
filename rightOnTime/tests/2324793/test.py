@@ -37,8 +37,6 @@ class AttendanceCheckInTestCase(APITestCase):
 
 		attendance_exists = Attendance.objects.filter(employee=self.employee).exists()
 		self.assertTrue(attendance_exists)
-		print("Response Data:", response.data)
-
 	def test_duplicate_check_in_same_day_returns_conflict(self):
 		"""Verify the endpoint blocks multiple check-ins on the same day"""
 		Attendance.objects.create(
