@@ -42,11 +42,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'employees',
     'administrator',
+    'employees',
     'attendance',
 ]
-AUTH_USER_MODEL = 'employees.Employee'
+AUTH_USER_MODEL = 'administrator.Administrator'
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -65,7 +65,7 @@ REST_FRAMEWORK = {
         ] }
  
 CORS_ALLOWED_ORIGINS = [ 
-"http://localhost:3000" 
+    "http://localhost:8000" 
 ] 
 
 SIMPLE_JWT = { 
@@ -106,14 +106,22 @@ DATABASES = {
     #     'ENGINE': 'django.db.backends.sqlite3',
     #     'NAME': BASE_DIR / 'db.sqlite3',
     # }
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'HOST': 'aws-1-us-east-1.pooler.supabase.com',
-        'PORT': 5432,
-        'NAME': 'postgres',
-        'PASSWORD': 'rightOnTime123.',
-        'USER': 'postgres.krmglfjfjegrgwwehtzu', 
+     'default': {
+         'ENGINE': 'django.db.backends.postgresql',
+         'HOST': 'aws-1-us-east-1.pooler.supabase.com',
+         'PORT': 5432,
+         'NAME': 'postgres',
+         'PASSWORD': 'rightOnTime123.',
+         'USER': 'postgres.fwubtapejdfuakbvzytg', 
     }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql',
+    #     'HOST': 'aws-1-us-east-2.pooler.supabase.com',
+    #     'PORT': 5432,
+    #     'NAME': 'postgres',
+    #     'PASSWORD': 'prueba1',
+    #     'USER': 'postgres.bwbevliovpcmtelhwmat', 
+    # }
 }
 
 # Password validation
