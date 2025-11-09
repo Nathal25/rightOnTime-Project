@@ -71,15 +71,6 @@ jobs:
           pip install -r requirements.txt
           pip install pytest pytest-cov pytest-django coverage
 
-      - name: Run tests with coverage for SonarCloud
-        working-directory: ./rightOnTime
-        env:
-          SECRET_KEY: 'test-secret-key-for-ci'
-          DEBUG: 'False'
-        run: |
-          coverage run --source='.' manage.py test
-          coverage xml -o coverage.xml
-
       - name: Download coverage reports
         uses: actions/download-artifact@v4
         with:
