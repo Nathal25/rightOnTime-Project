@@ -1,7 +1,7 @@
 # Coverage.py configuration for RightOnTime Project
 
 [run]
-source = "."
+source = .
 omit =
     */migrations/*
     */tests.py
