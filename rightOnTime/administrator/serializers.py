@@ -1,4 +1,5 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework import serializers
 
 class AdminLoginSerializer(TokenObtainPairSerializer):
     """
@@ -12,7 +13,7 @@ class AdminLoginSerializer(TokenObtainPairSerializer):
         
         # Check if user is staff/admin
         if not self.user.is_staff:
-            raise Exception("Only administrators can login")
+            raise serializers.ValidationError({"detail": "Only administrators can login"})
         
         # Return tokens if user is staff
         return data
