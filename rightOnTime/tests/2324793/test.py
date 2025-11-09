@@ -23,7 +23,6 @@ class AttendanceCheckInTestCase(APITestCase):
 			state='active'
 		)
 		self.url = '/attendance/checkin/'
-		print("Setup complete: Employee created with ID", self.employee)
 
 	def test_employee_check_in_creates_attendance_record(self):
 		"""Ensure the endpoint registers attendance for a valid document"""
