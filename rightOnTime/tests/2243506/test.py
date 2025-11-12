@@ -13,10 +13,11 @@ class EmployeesAPITestCase(APITestCase):
     def setUp(self):
         """Sets up an authenticated admin user and base URL"""
         # Create a real administrator user
+        test_password = "test_password"
         self.admin_user = Administrator.objects.create_user(
             username='admin_test',
             email='admin@example.com',
-            password='admin123',
+            password=test_password,
             id_administrator='ADM001',
             phone_number=3001112233,
             is_staff=True
