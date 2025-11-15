@@ -62,5 +62,5 @@ def check_out(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def list_all_attendance(request):
-    data = Attendance.objects.all().values()
+    data = list(Attendance.objects.all().values())
     return Response(data)
