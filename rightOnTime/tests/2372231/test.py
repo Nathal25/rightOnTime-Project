@@ -1,5 +1,5 @@
 """
-Tests completos para aumentar la cobertura del proyecto RightOnTime
+"""Tests completos para aumentar la cobertura del proyecto RightOnTime
 Incluye tests de modelos, serializers, vistas API, validaciones y casos edge
 """
 from django.test import TestCase
@@ -13,6 +13,10 @@ from employees.models import Employee
 from attendance.serializers import AttendanceSerializer
 from employees.serializers import EmployeeSerializer
 from administrator.models import Administrator
+
+# Test configuration constants
+TEST_USER_PASSWORD = 'testpass123'
+TEST_ADMIN_PASSWORD = 'admin123'
 
 
 # ========================
@@ -404,7 +408,7 @@ class ListAllAttendanceAPITest(APITestCase):
         # Crear usuario para autenticación (si es necesario)
         self.user = Administrator.objects.create_user(
             username='testuser', 
-            password='testpass123',
+            password=TEST_USER_PASSWORD,
             email='testuser@example.com',
             id_administrator='ADM001',
             phone_number=3001234567
@@ -467,7 +471,7 @@ class EmployeeViewSetTest(APITestCase):
         # Crear usuario para autenticación
         self.user = Administrator.objects.create_user(
             username='admin', 
-            password='admin123',
+            password=TEST_ADMIN_PASSWORD,
             email='admin@example.com',
             id_administrator='ADM002',
             phone_number=3109876543
