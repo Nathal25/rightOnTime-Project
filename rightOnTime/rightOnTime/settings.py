@@ -168,8 +168,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 import sys
 
 # Check if the 'test' argument is present in the command line arguments
-# This happens when running: python manage.py test
-if 'test' in sys.argv:
+# This happens when running: python manage.py test OR pytest
+if 'test' in sys.argv or 'pytest' in sys.modules:
     # Override the default database configuration to use SQLite in-memory
     # This makes tests run faster since data is stored in RAM instead of disk
     DATABASES['default'] = {
