@@ -1,5 +1,5 @@
 """
-"""Tests completos para aumentar la cobertura del proyecto RightOnTime
+Tests completos para aumentar la cobertura del proyecto RightOnTime
 Incluye tests de modelos, serializers, vistas API, validaciones y casos edge
 """
 from django.test import TestCase
@@ -16,7 +16,7 @@ from administrator.models import Administrator
 
 # Test configuration constants
 TEST_USER_PASSWORD = 'testpass123'
-TEST_ADMIN_PASSWORD = 'admin123'
+TEST_ADMIN_PASSWORD = 'adm1n123'
 
 
 # ========================
