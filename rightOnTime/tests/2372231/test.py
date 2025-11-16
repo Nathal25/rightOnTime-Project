@@ -39,6 +39,12 @@ class EmployeeModelTest(TestCase):
             'state': 'active'
         }
     
+    def test_employee_str_representation(self):
+        """Test: Representación en string del empleado"""
+        employee = Employee.objects.create(**self.employee_data)
+        expected_str = f'EMP001 - Juan Pérez'
+        self.assertEqual(str(employee), expected_str)
+
     def test_create_employee_success(self):
         """Test: Crear un empleado exitosamente"""
         employee = Employee.objects.create(**self.employee_data)
@@ -47,18 +53,6 @@ class EmployeeModelTest(TestCase):
         self.assertEqual(employee.state, 'active')
         self.assertIsNotNone(employee.created_at)
     
-    def test_employee_str_representation(self):
-        """Test: Representación en string del empleado"""
-        employee = Employee.objects.create(**self.employee_data)
-        expected_str = f'EMP001 - Juan Pérez'
-        self.assertEqual(str(employee), expected_str)
-    
-    def test_employee_unique_id(self):
-        """Test: El ID de empleado debe ser único"""
-        Employee.objects.create(**self.employee_data)
-        with self.assertRaises(Exception):  # IntegrityError
-            Employee.objects.create(**self.employee_data)
-    
     def test_employee_unique_document_id(self):
         """Test: El número de documento debe ser único"""
         Employee.objects.create(**self.employee_data)
@@ -66,6 +60,12 @@ class EmployeeModelTest(TestCase):
         duplicate_data['id_employee'] = 'EMP002'
         with self.assertRaises(Exception):  # IntegrityError
             Employee.objects.create(**duplicate_data)
+    
+    def test_employee_unique_id(self):
+        """Test: El ID de empleado debe ser único"""
+        Employee.objects.create(**self.employee_data)
+        with self.assertRaises(Exception):  # IntegrityError
+            Employee.objects.create(**self.employee_data)
     
     def test_employee_inactive_state(self):
         """Test: Empleado con estado inactivo"""
@@ -101,6 +101,16 @@ class AttendanceModelTest(TestCase):
             contract_date=date(2024, 1, 15)
         )
     
+    def test_attendance_str_representation(self):
+        """Test: Representación en string de asistencia"""
+        attendance = Attendance.objects.create(
+            id_attendance='A-001',
+            employee=self.employee,
+            check_in_time=time(9, 0, 0)
+        )
+        expected_str = f'Asistencia A-001 - Empleado EMP001'
+        self.assertEqual(str(attendance), expected_str)
+    
     def test_create_attendance_success(self):
         """Test: Crear asistencia exitosamente"""
         attendance = Attendance.objects.create(
@@ -113,15 +123,14 @@ class AttendanceModelTest(TestCase):
         self.assertIsNotNone(attendance.date)
         self.assertEqual(attendance.employee, self.employee)
     
-    def test_attendance_str_representation(self):
-        """Test: Representación en string de asistencia"""
+    def test_attendance_without_checkout(self):
+        """Test: Asistencia sin hora de salida (null permitido)"""
         attendance = Attendance.objects.create(
-            id_attendance='A-001',
+            id_attendance='A-003',
             employee=self.employee,
             check_in_time=time(9, 0, 0)
         )
-        expected_str = f'Asistencia A-001 - Empleado EMP001'
-        self.assertEqual(str(attendance), expected_str)
+        self.assertIsNone(attendance.check_out_time)
     
     def test_attendance_with_checkout(self):
         """Test: Asistencia con hora de salida"""
@@ -133,24 +142,6 @@ class AttendanceModelTest(TestCase):
         )
         self.assertIsNotNone(attendance.check_out_time)
         self.assertEqual(attendance.check_out_time, time(18, 0, 0))
-    
-    def test_attendance_without_checkout(self):
-        """Test: Asistencia sin hora de salida (null permitido)"""
-        attendance = Attendance.objects.create(
-            id_attendance='A-003',
-            employee=self.employee,
-            check_in_time=time(9, 0, 0)
-        )
-        self.assertIsNone(attendance.check_out_time)
-    
-    def test_attendance_default_status(self):
-        """Test: Estado por defecto es 'Present'"""
-        attendance = Attendance.objects.create(
-            id_attendance='A-004',
-            employee=self.employee,
-            check_in_time=time(9, 0, 0)
-        )
-        self.assertEqual(attendance.status, 'Present')
     
     def test_attendance_cascade_delete(self):
         """Test: Eliminar empleado elimina sus asistencias (CASCADE)"""
@@ -164,6 +155,15 @@ class AttendanceModelTest(TestCase):
         # Verificar que las asistencias también se eliminaron
         attendances = Attendance.objects.filter(employee_id=employee_id)
         self.assertEqual(attendances.count(), 0)
+    
+    def test_attendance_default_status(self):
+        """Test: Estado por defecto es 'Present'"""
+        attendance = Attendance.objects.create(
+            id_attendance='A-004',
+            employee=self.employee,
+            check_in_time=time(9, 0, 0)
+        )
+        self.assertEqual(attendance.status, 'Present')
     
     def test_attendance_unique_id(self):
         """Test: El ID de asistencia debe ser único"""
