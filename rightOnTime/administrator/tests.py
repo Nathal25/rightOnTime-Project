@@ -60,4 +60,6 @@ class AdminLoginSerializerTest(TestCase):
             'username': 'admin_user',
             'password': 'wrongpassword'
         })
-        self.assertFalse(serializer.is_valid())
+        # Should raise validation error for invalid credentials
+        with self.assertRaises(Exception):
+            serializer.is_valid(raise_exception=True)

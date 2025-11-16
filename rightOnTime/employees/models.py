@@ -54,14 +54,15 @@ class Employee(models.Model):
 
     role = models.CharField(
         max_length=50,
-        blank=False,
-        null=False,
+        blank=True,
+        null=True,
+        default='Employee',
         verbose_name='Rol'
     )
 
     contract_date = models.DateField(
-        blank=False,
-        null=False,
+        blank=True,
+        null=True,
         verbose_name='Fecha de contrato'
     )
 
@@ -72,7 +73,7 @@ class Employee(models.Model):
         verbose_name='Estado'
     )
 
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
     class Meta:
         verbose_name = 'Empleado'
