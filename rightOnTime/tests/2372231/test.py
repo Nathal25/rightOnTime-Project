@@ -18,7 +18,6 @@ from administrator.models import Administrator
 TEST_USER_PASSWORD = 'testpass123'
 TEST_ADMIN_PASSWORD = 'adm1n123'
 
-
 # ========================
 # 1. TESTS DE MODELOS
 # ========================
