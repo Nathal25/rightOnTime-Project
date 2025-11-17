@@ -1,12 +1,12 @@
 from datetime import date, datetime, time
-from django.test import TestCase
-from django.urls import reverse
+
 from rest_framework import status
-from rest_framework.test import APITestCase, APIClient
+from rest_framework.test import APITestCase
+from rest_framework_simplejwt.tokens import RefreshToken
+
 from attendance.models import Attendance
 from employees.models import Employee
 from administrator.models import Administrator
-from rest_framework_simplejwt.tokens import RefreshToken
 
 
 class AttendanceCheckOutTestCase(APITestCase):
@@ -35,7 +35,6 @@ class AttendanceCheckOutTestCase(APITestCase):
             status='Present'
         )
         
-        self.client = APIClient()
         self.url = '/attendance/checkout/'
 
     def test_employee_can_check_out_successfully(self):
@@ -345,10 +344,11 @@ class AttendanceListAllTestCase(APITestCase):
     def setUp(self):
         """Create admin user and test data"""
         # Create an admin user for authentication
+        test_password = 'test_secure_password_123'
         self.admin_user = Administrator.objects.create_user(
             username='admin_test',
             email='admin@test.com',
-            password='AdminPass123.',
+            password=test_password,
             id_administrator='ADM001',
             phone_number=3001234567,
             is_staff=True
@@ -398,7 +398,6 @@ class AttendanceListAllTestCase(APITestCase):
             status='Present'
         )
         
-        self.client = APIClient()
         self.url = '/attendance/list/'
 
     def test_authenticated_admin_can_list_all_attendance(self):
@@ -460,7 +459,6 @@ class AttendanceCheckInTestCase(APITestCase):
             state='active'
         )
         
-        self.client = APIClient()
         self.url = '/attendance/checkin/'
 
     def test_employee_can_check_in_successfully(self):
