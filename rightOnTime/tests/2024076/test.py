@@ -1,5 +1,5 @@
 """
-Prueba unitaria para el flujo de check-in de asistencia
+Pruebas de integración para el flujo de check-in de asistencia
 Código de estudiante: 2024076
 """
 from django.test import TestCase
