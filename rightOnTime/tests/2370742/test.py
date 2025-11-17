@@ -167,11 +167,10 @@ class AttendanceListAllTestCase(APITestCase):
 
 	def setUp(self):
 		"""Create admin user and test data"""
-		test_password = 'test_secure_password_123'
 		self.admin_user = Administrator.objects.create_user(
 			username='admin_test',
 			email='admin@test.com',
-			password=test_password,
+			password='test_secure_password_123',
 			id_administrator='ADM001',
 			phone_number=3001234567,
 			is_staff=True
