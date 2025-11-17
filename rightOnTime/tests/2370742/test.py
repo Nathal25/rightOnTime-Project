@@ -91,15 +91,16 @@ class AttendanceCheckOutTestCase(APITestCase):
         first_checkout = self.attendance.check_out_time
         self.assertIsNotNone(first_checkout)
         
-        # Attempt second check-out (should update the same record)
+        # Attempt second check-out (should return conflict)
         response2 = self.client.post(
             self.url,
             {'document_id': self.employee.document_id},
             format='json'
         )
         
-        # Should succeed (updates the existing checkout time)
-        self.assertEqual(response2.status_code, status.HTTP_200_OK)
+        # Should return 409 CONFLICT
+        self.assertEqual(response2.status_code, status.HTTP_409_CONFLICT)
+        self.assertIn('error', response2.data)
 
     def test_checkout_with_invalid_document_returns_not_found(self):
         """Ensure check-out with non-existent document ID returns 404"""

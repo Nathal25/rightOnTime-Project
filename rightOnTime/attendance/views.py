@@ -54,6 +54,9 @@ def check_out(request):
     if not attendance:
         return Response({"error": "No hay check-in registrado hoy"}, status=409)
 
+    if attendance.check_out_time is not None:
+        return Response({"error": "Ya has registrado salida hoy"}, status=409)
+
     attendance.check_out_time = datetime.now().time()
     attendance.save()
 
