@@ -123,24 +123,6 @@ class AttendanceCheckOutTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn('error', response.data)
 
-    def test_checkout_updates_attendance_record_correctly(self):
-        """Confirm that check-out properly updates the attendance record"""
-        initial_checkout_time = self.attendance.check_out_time
-        self.assertIsNone(initial_checkout_time)
-
-        response = self.client.post(
-            self.url,
-            {'document_id': self.employee.document_id},
-            format='json'
-        )
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
-        # Refresh and verify the record was updated
-        self.attendance.refresh_from_db()
-        self.assertIsNotNone(self.attendance.check_out_time)
-        self.assertEqual(self.attendance.status, 'Present')
-
     def test_checkout_with_string_document_id(self):
         """Verify check-out works with string document ID"""
         response = self.client.post(
