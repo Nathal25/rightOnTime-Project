@@ -2,17 +2,11 @@
 Pruebas de integración para el flujo de check-in de asistencia
 Código de estudiante: 2024076
 """
-from django.test import TestCase
-from django.utils import timezone
-from django.core.exceptions import ValidationError
-from rest_framework.test import APITestCase, APIClient
+from rest_framework.test import APITestCase
 from rest_framework import status
-from datetime import datetime, date, time
+from datetime import date
 from attendance.models import Attendance
 from employees.models import Employee
-from attendance.serializers import AttendanceSerializer
-from employees.serializers import EmployeeSerializer
-from administrator.models import Administrator
 
 
 class StudentCheckInTest(APITestCase):
