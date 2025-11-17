@@ -1,8 +1,12 @@
 from datetime import date, datetime, time
+from django.test import TestCase
+from django.urls import reverse
 from rest_framework import status
-from rest_framework.test import APITestCase
+from rest_framework.test import APITestCase, APIClient
 from attendance.models import Attendance
 from employees.models import Employee
+from administrator.models import Administrator
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 class AttendanceCheckOutTestCase(APITestCase):
@@ -31,6 +35,7 @@ class AttendanceCheckOutTestCase(APITestCase):
             status='Present'
         )
         
+        self.client = APIClient()
         self.url = '/attendance/checkout/'
 
     def test_employee_can_check_out_successfully(self):
@@ -325,3 +330,190 @@ class AttendanceCheckOutTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn('error', response.data)
         self.assertEqual(response.data['error'], 'document_id requerido')
+
+
+class AttendanceListAllTestCase(APITestCase):
+    """Test suite for listing all attendance records"""
+
+    def setUp(self):
+        """Create admin user and test data"""
+        # Create an admin user for authentication
+        self.admin_user = Administrator.objects.create_user(
+            username='admin_test',
+            email='admin@test.com',
+            password='AdminPass123.',
+            id_administrator='ADM001',
+            phone_number=3001234567,
+            is_staff=True
+        )
+        
+        # Generate JWT token
+        refresh = RefreshToken.for_user(self.admin_user)
+        self.access_token = str(refresh.access_token)
+        
+        # Create test employees
+        self.employee1 = Employee.objects.create(
+            id_employee='EMP300',
+            phone_number=3112223344,
+            name='Ana',
+            lastname='Perez',
+            document_id=1111111111,
+            role='Operario',
+            contract_date=date.today(),
+            state='active'
+        )
+        
+        self.employee2 = Employee.objects.create(
+            id_employee='EMP301',
+            phone_number=3223334455,
+            name='Mario',
+            lastname='Lopez',
+            document_id=2222222222,
+            role='Supervisor',
+            contract_date=date.today(),
+            state='active'
+        )
+        
+        # Create attendance records
+        self.attendance1 = Attendance.objects.create(
+            id_attendance='ATT-LIST-001',
+            employee=self.employee1,
+            check_in_time=time(8, 0, 0),
+            check_out_time=time(17, 0, 0),
+            status='Present'
+        )
+        
+        self.attendance2 = Attendance.objects.create(
+            id_attendance='ATT-LIST-002',
+            employee=self.employee2,
+            check_in_time=time(8, 30, 0),
+            check_out_time=None,
+            status='Present'
+        )
+        
+        self.client = APIClient()
+        self.url = '/attendance/list/'
+
+    def test_authenticated_admin_can_list_all_attendance(self):
+        """Verify that authenticated admin can list all attendance records"""
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
+        response = self.client.get(self.url)
+        
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIsInstance(response.data, list)
+        self.assertGreaterEqual(len(response.data), 2)
+
+    def test_unauthenticated_user_cannot_list_attendance(self):
+        """Verify that unauthenticated user cannot access the list"""
+        response = self.client.get(self.url)
+        
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_list_returns_attendance_data(self):
+        """Verify that list returns proper attendance data structure"""
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
+        response = self.client.get(self.url)
+        
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        # Check that response contains expected fields
+        if len(response.data) > 0:
+            first_record = response.data[0]
+            self.assertIn('id_attendance', first_record)
+            self.assertIn('employee_id', first_record)
+            self.assertIn('check_in_time', first_record)
+
+    def test_list_includes_all_created_records(self):
+        """Verify all created attendance records are in the list"""
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
+        response = self.client.get(self.url)
+        
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        # Extract attendance IDs from response
+        attendance_ids = [record['id_attendance'] for record in response.data]
+        
+        self.assertIn('ATT-LIST-001', attendance_ids)
+        self.assertIn('ATT-LIST-002', attendance_ids)
+
+
+class AttendanceCheckInTestCase(APITestCase):
+    """Additional test cases for check-in functionality"""
+
+    def setUp(self):
+        """Setup test employee"""
+        self.employee = Employee.objects.create(
+            id_employee='EMP400',
+            phone_number=3334445566,
+            name='Roberto',
+            lastname='Martinez',
+            document_id=3333333333,
+            role='Operario',
+            contract_date=date.today(),
+            state='active'
+        )
+        
+        self.client = APIClient()
+        self.url = '/attendance/checkin/'
+
+    def test_employee_can_check_in_successfully(self):
+        """Verify employee can check in successfully"""
+        response = self.client.post(
+            self.url,
+            {'document_id': self.employee.document_id},
+            format='json'
+        )
+        
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('message', response.data)
+
+    def test_checkin_creates_attendance_record(self):
+        """Verify check-in creates an attendance record"""
+        initial_count = Attendance.objects.count()
+        
+        response = self.client.post(
+            self.url,
+            {'document_id': self.employee.document_id},
+            format='json'
+        )
+        
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(Attendance.objects.count(), initial_count + 1)
+
+    def test_checkin_with_invalid_document_returns_404(self):
+        """Verify check-in with invalid document returns 404"""
+        response = self.client.post(
+            self.url,
+            {'document_id': 9999999999},
+            format='json'
+        )
+        
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_checkin_without_document_id_returns_400(self):
+        """Verify check-in without document_id returns 400"""
+        response = self.client.post(
+            self.url,
+            {},
+            format='json'
+        )
+        
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_duplicate_checkin_returns_409(self):
+        """Verify duplicate check-in on same day returns 409"""
+        # First check-in
+        self.client.post(
+            self.url,
+            {'document_id': self.employee.document_id},
+            format='json'
+        )
+        
+        # Second check-in attempt
+        response = self.client.post(
+            self.url,
+            {'document_id': self.employee.document_id},
+            format='json'
+        )
+        
+        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
