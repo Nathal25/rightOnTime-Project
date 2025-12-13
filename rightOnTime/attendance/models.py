@@ -1,10 +1,10 @@
 from django.db import models
+from django.utils import timezone
 from employees.models import Employee
 
 # Create your models here.
 class Attendance(models.Model):
     id_attendance = models.CharField(
-        default=None,
         max_length=50,
         unique=True,
         blank=False,
@@ -44,8 +44,20 @@ class Attendance(models.Model):
         related_name='attendances',
         verbose_name='Empleado'
     )
+
+    created_at = models.DateTimeField(
+        default=timezone.now,
+        verbose_name='Fecha de creación'
+    )
+
+    updated_at = models.DateTimeField(
+        auto_now=True,
+        verbose_name='Fecha de actualización'
+    )
+
     def __str__(self):
         return f'Asistencia {self.id_attendance} - Empleado {self.employee.id_employee}'
+    
     class Meta:
         verbose_name = 'Asistencia'
         verbose_name_plural = 'Asistencias'

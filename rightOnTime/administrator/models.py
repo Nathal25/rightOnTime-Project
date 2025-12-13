@@ -1,6 +1,7 @@
 from django.db import models
+from django.utils import timezone
 from django.contrib.auth.models import AbstractUser
-from django.core.validators import RegexValidator 
+from django.core.validators import MinValueValidator, MaxValueValidator 
 
 class Administrator(AbstractUser):
     # Añadir related_name para evitar conflictos con Employee
@@ -30,14 +31,12 @@ class Administrator(AbstractUser):
     )
 
     phone_number = models.PositiveBigIntegerField(
+        unique=True,
         blank=False,
         null=False,
         validators=[
-            RegexValidator(
-                regex=r'^(3|6)\d{9}$',
-                message='No es un número de teléfono válido',
-                code='invalid_phonenumber'
-            )
+            MinValueValidator(3000000000, message='El teléfono debe empezar con 3 o 6 y tener 10 dígitos'),
+            MaxValueValidator(6999999999, message='El teléfono debe empezar con 3 o 6 y tener 10 dígitos')
         ],
         verbose_name='Número teléfono'
     )
@@ -52,6 +51,16 @@ class Administrator(AbstractUser):
 
     USERNAME_FIELD = 'username'  # Por defecto es 'username', se puede cambiar a 'email' si quieres
     REQUIRED_FIELDS = ['email', 'id_administrator', 'phone_number']
+
+    created_at = models.DateTimeField(
+        default=timezone.now,
+        verbose_name='Fecha de creación'
+    )
+
+    updated_at = models.DateTimeField(
+        auto_now=True,
+        verbose_name='Fecha de actualización'
+    )
 
     class Meta:
         verbose_name = 'Administrador'
