@@ -106,22 +106,14 @@ DATABASES = {
     #     'ENGINE': 'django.db.backends.sqlite3',
     #     'NAME': BASE_DIR / 'db.sqlite3',
     # }
-     'default': {
-         'ENGINE': 'django.db.backends.postgresql',
-         'HOST': 'aws-1-us-east-1.pooler.supabase.com',
-         'PORT': 5432,
-         'NAME': 'postgres',
-         'PASSWORD': 'rightOnTime123.',
-         'USER': 'postgres.fwubtapejdfuakbvzytg', 
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'HOST': 'aws-1-us-east-1.pooler.supabase.com',
+        'PORT': 5432,
+        'NAME': 'postgres',
+        'PASSWORD': 'ProyectoDesarrollo123.',
+        'USER': 'postgres.krmglfjfjegrgwwehtzu', 
     }
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.postgresql',
-    #     'HOST': 'aws-1-us-east-2.pooler.supabase.com',
-    #     'PORT': 5432,
-    #     'NAME': 'postgres',
-    #     'PASSWORD': 'prueba1',
-    #     'USER': 'postgres.bwbevliovpcmtelhwmat', 
-    # }
 }
 
 # Password validation

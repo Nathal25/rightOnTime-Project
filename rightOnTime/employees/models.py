@@ -1,5 +1,6 @@
 from django.db import models
-from django.core.validators import RegexValidator
+from django.utils import timezone
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 class Employee(models.Model):
     id_employee = models.CharField(
@@ -11,15 +12,12 @@ class Employee(models.Model):
     )
 
     phone_number = models.PositiveBigIntegerField(
-        unique=False,
+        unique=True,
         blank=False,
         null=False,
         validators=[
-            RegexValidator(
-                regex=r'^(3|6)\d{9}$',
-                message='No es un número de teléfono válido',
-                code='invalid_phonenumber'
-            )
+            MinValueValidator(3000000000, message='El teléfono debe empezar con 3 o 6 y tener 10 dígitos'),
+            MaxValueValidator(6999999999, message='El teléfono debe empezar con 3 o 6 y tener 10 dígitos')
         ],
         verbose_name='Número teléfono'
     )
@@ -43,11 +41,8 @@ class Employee(models.Model):
         blank=False,
         null=False,
         validators=[
-            RegexValidator(
-                regex=r'^\d{7,10}$',
-                message='No es un número de documento válido',
-                code='invalid_document_id'
-            )
+            MinValueValidator(1000000, message='El documento debe tener entre 7 y 10 dígitos'),
+            MaxValueValidator(9999999999, message='El documento debe tener entre 7 y 10 dígitos')
         ],
         verbose_name='Cédula ciudadanía'
     )
@@ -73,7 +68,15 @@ class Employee(models.Model):
         verbose_name='Estado'
     )
 
-    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    created_at = models.DateTimeField(
+        default=timezone.now,
+        verbose_name='Fecha de creación'
+    )
+
+    updated_at = models.DateTimeField(
+        auto_now=True,
+        verbose_name='Fecha de actualización'
+    )
 
     class Meta:
         verbose_name = 'Empleado'
