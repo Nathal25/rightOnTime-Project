@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: nicolenarvaez/rightontime-backend:v1
+          image: nicolenarvaez/rightontime-backend:v2
           imagePullPolicy: Always
           ports:
             - containerPort: 8000
