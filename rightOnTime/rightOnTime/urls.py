@@ -23,6 +23,7 @@ from administrator.views import AdminLoginView
 router = DefaultRouter()
 router.register('employees', EmployeeViewSet)
 
+
 urlpatterns = [
     # login admin
     path('auth/login/', AdminLoginView.as_view(), name='admin-login'),
@@ -30,4 +31,6 @@ urlpatterns = [
     # crud employees
     path('', include(router.urls)),
     path('attendance/', include('attendance.urls')),
+
+    
 ]
